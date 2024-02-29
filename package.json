@@ -1,0 +1,14 @@
+{
+	"type": "module",
+	"private": true,
+	"workspaces": [
+		"bot/*",
+		"web/*"
+	],
+	"devDependencies": {
+		"turbo": "^1.12.4"
+	},
+	"scripts": {
+		"build": "turbo build"
+	}
+}
