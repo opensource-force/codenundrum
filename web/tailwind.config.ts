@@ -9,7 +9,11 @@ export default {
 		'src/**/**/**/*.tsx',
 		'./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'
 	],
-	plugins: [nextui()],
+	plugins: [
+		nextui({
+			defaultTheme: 'dark'
+		})
+	],
 	theme: {
 		extend: {
 			colors: {

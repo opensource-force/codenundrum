@@ -13,6 +13,6 @@
 		"isolatedModules": true,
 		"alwaysStrict": true
 	},
-	"include": ["bot/src/**/*", "bot/scripts/**/*", "*.ts", "shared/schemas.ts"],
+	"include": ["src/**/*", "scripts/**/*", "*.ts", "shared/schemas.ts"],
 	"exclude": ["node_modules"]
 }

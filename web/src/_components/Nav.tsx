@@ -1,33 +1,23 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faYoutube } from '@fortawesome/free-brands-svg-icons';
+'use client';
+
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import {
 	Avatar,
+	Button,
 	Link,
 	Navbar,
 	NavbarBrand,
-	// NavbarContent,
-	// NavbarItem,
+	NavbarContent,
+	NavbarItem,
 	NavbarMenu
-	// NavbarMenuItem,
-	// NavbarMenuToggle
 } from '@nextui-org/react';
-// import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function Nav() {
-	// const [isMenuOpen, setIsMenuOpen] = useState(false);
-	// const menuItems = [];
+	const { data: session } = useSession();
 
 	return (
-		<Navbar
-			// onMenuOpenChange={setIsMenuOpen}
-			isBordered
-			isBlurred
-		>
-			{/* <NavbarMenuToggle
-				aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-				className="sm:hidden"
-			/> */}
+		<Navbar isBordered isBlurred>
 			<NavbarBrand className="font-black text-xl">
 				<Link
 					href="/"
@@ -42,41 +32,18 @@ export default function Nav() {
 					Codenundrum
 				</Link>
 			</NavbarBrand>
-			{/* <NavbarContent className="hidden sm:flex gap-4" justify="center">
-				{...menuItems.map(item => (
-					<NavbarItem isActive={window.location.pathname === item.href}>
-						<Link
-							isBlock
-							color={
-								window.location.pathname === item.href ? 'success' : 'primary'
-							}
-							href={window.location.pathname === item.href ? '#' : item.href}
-						>
-							{item.name}
-						</Link>
-					</NavbarItem>
-				))}
-			</NavbarContent> */}
-			{/* <NavbarContent justify="end">
+			<NavbarContent justify="end">
 				<NavbarItem>
+					<Button
+						color="secondary"
+						size="sm"
+						variant="shadow"
+						onPress={() => window.location.assign('/dashboard/')}
+					>
+						{session ? 'Continue to Dashboard' : 'Login to Dashboard'}
+					</Button>
 				</NavbarItem>
-			</NavbarContent> */}
-			<NavbarMenu className="bg-gradient-to-b from-neutral-800 to-[#26262684] p-8">
-				{/* {...menuItems.map(item => (
-					<NavbarMenuItem isActive={window.location.href === item.href}>
-						<Link
-							color={
-								window.location.pathname === item.href ? 'success' : 'secondary'
-							}
-							href={window.location.pathname === item.href ? '#' : item.href}
-							className="w-full text-xl rounded-2xl active:bg-neutral-600 active:text-blue-400 p-2"
-							size="lg"
-						>
-							{item.name}
-						</Link>
-					</NavbarMenuItem>
-				))} */}
-			</NavbarMenu>
+			</NavbarContent>
 		</Navbar>
 	);
 }

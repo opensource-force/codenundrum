@@ -12,7 +12,7 @@ import {
 import { CommandHelpEntry } from '../lib/CommandHelpEntry';
 import { openKv } from '@deno/kv';
 import { DENO_KV_URL } from '../config';
-import { ChallengeData } from '../../shared/schemas';
+import { ChallengeData } from '../../../shared/schemas';
 
 export const data = new SlashCommandBuilder()
 	.setName('challenge')

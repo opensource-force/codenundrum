@@ -9,7 +9,7 @@ const handler = NextAuth({
 			clientSecret: process.env.DISCORD_SECRET as string,
 			authorization: {
 				params: {
-					scope: 'bot identify email guilds guilds.members.read'
+					scope: 'identify guilds guilds.members.read'
 				}
 			},
 			style: {
@@ -22,18 +22,24 @@ const handler = NextAuth({
 	],
 	callbacks: {
 		async jwt({ token, account }) {
-			return {
-				token,
-				accessToken: account?.accessToken,
-				tokenType: account?.tokenType
-			} as ExtdJWT;
+			if (account) {
+				token.accessToken = account.access_token;
+				token.tokenType = account.token_type;
+			}
+			return token as ExtdJWT;
 		},
-		async session({ session, token }: { session: Session; token: ExtdJWT }) {
-			return {
-				...session,
-				accessToken: token.accessToken,
-				tokenType: token.tokenType
-			} as ExtdSession;
+		async session({
+			session,
+			token
+		}: {
+			session: ExtdSession;
+			token: ExtdJWT;
+		}) {
+			if (token) {
+				session.accessToken = token.accessToken;
+				session.tokenType = token.tokenType;
+			}
+			return session as ExtdSession;
 		}
 	}
 });
