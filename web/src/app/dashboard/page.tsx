@@ -169,7 +169,7 @@ export default function Dashboard() {
 								emptyContent="No scores found."
 								items={guildScores
 									.sort(v => v[1])
-									.toReversed()
+									.reverse()
 									.map((v, i) => {
 										return {
 											score: v[1],
