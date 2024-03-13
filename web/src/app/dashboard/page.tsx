@@ -19,16 +19,14 @@ import Nav from '../../_components/Nav';
 import {
 	RESTGetAPICurrentUserResult as UserResult,
 	RESTGetAPICurrentUserGuildsResult as GuildsResult,
-	RESTGetAPIChannelResult as ChannelResult,
 	RESTGetCurrentUserGuildMemberResult as MemberResult,
 	Snowflake,
 	PermissionFlagsBits,
-	RESTAPIPartialCurrentUserGuild as GuildResult,
-	RESTGetAPIGuildMemberResult
+	RESTAPIPartialCurrentUserGuild as GuildResult
 } from 'discord-api-types/v10';
 import { useEffect, useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { ExtdSession } from '../api/auth/[...nextauth]/route';
+import { ExtdSession } from '../../auth';
 import { getGuildScores, getGuilds, getUserData } from './functions';
 
 export default function Dashboard() {

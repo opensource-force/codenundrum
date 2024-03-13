@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth/next';
 import { getGuildScores } from '../../../../../../../shared/functions';
-import { authOptions } from '../../../auth/[...nextauth]/route';
+import { authOptions } from '../../../../../auth';
 
 export async function GET(
 	req: Request,
@@ -18,7 +18,7 @@ export async function GET(
 	if (!data)
 		return Response.json(
 			{
-				error: 'No entry found for Discord guild with ID ' + params.guildId
+				error: `No entry found for Discord guild with ID ${params.guildId}`
 			},
 			{ status: 404 }
 		);

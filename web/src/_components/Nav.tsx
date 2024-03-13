@@ -8,8 +8,7 @@ import {
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
-	NavbarItem,
-	NavbarMenu
+	NavbarItem
 } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 

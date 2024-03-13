@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../../../../auth/[...nextauth]/route';
+import { authOptions } from '../../../../../../../auth';
 import { REST } from '@discordjs/rest';
 import { RESTGetAPIGuildMemberResult, Routes } from 'discord-api-types/v10';
 
