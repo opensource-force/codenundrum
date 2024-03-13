@@ -6,6 +6,7 @@ import {
 	EmbedBuilder,
 	ModalBuilder,
 	ModalSubmitInteraction,
+	PermissionFlagsBits,
 	TextInputBuilder,
 	TextInputStyle,
 	inlineCode
@@ -74,6 +75,16 @@ export const InteractionHandlers = {
 			);
 		} else if (interaction.customId.startsWith('challenge.end')) {
 			await interaction.deferReply({ ephemeral: true });
+			if (
+				!(
+					await interaction.guild!.members.fetch(interaction.user.id)
+				).permissions.has(PermissionFlagsBits.ManageGuild)
+			) {
+				await interaction.editReply(
+					'You do not have the required permissions to end a challenge. 🤪'
+				);
+				return;
+			}
 			const challengeId = interaction.customId.split('.')[2];
 			const challenge = (
 				(await getGuildChallenges(interaction.guildId!)) ?? []

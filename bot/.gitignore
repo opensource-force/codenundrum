@@ -1,5 +1,0 @@
-.env
-botfiles/*.db.json
-node_modules
-.vercel
-.env*.local
