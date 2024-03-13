@@ -1,8 +1,11 @@
 import 'dotenv/config';
 import {
 	ActivityType,
+	ButtonInteraction,
+	ChatInputCommandInteraction,
 	Events,
 	GatewayIntentBits,
+	ModalSubmitInteraction,
 	OAuth2Scopes,
 	PresenceUpdateStatus
 } from 'discord.js';
@@ -121,101 +124,27 @@ client
 	.on(Events.ClientReady, () => logger.info('Client#ready'))
 	.on(Events.InteractionCreate, async interaction => {
 		if (interaction.user.bot) return;
-		if (interaction.isChatInputCommand()) {
-			const command = client.commands.get(interaction.commandName);
-			if (!command) {
-				await interaction.reply('Internal error: Command not found');
-				return;
-			}
-			try {
+		try {
+			if (interaction.isChatInputCommand()) {
+				const command = client.commands.get(interaction.commandName);
+				if (!command) {
+					await interaction.reply('Internal error: Command not found');
+					return;
+				}
 				await command.execute(interaction);
-			} catch (e) {
-				logger.error(e);
-				if (interaction.replied || interaction.deferred) {
-					await interaction.editReply(
-						'There was an error while running this command.'
-					);
-				} else {
-					await interaction.reply({
-						content: 'There was an error while running this command.',
-						ephemeral: true
-					});
-				}
-			}
-		} else if (interaction.isModalSubmit()) {
-			try {
+			} else if (interaction.isModalSubmit()) {
 				await InteractionHandlers.ModalSubmit(interaction);
-			} catch (e) {
-				try {
-					if (interaction.replied)
-						await interaction.editReply({
-							content: 'There was an error while running this command.'
-						});
-					else
-						await interaction.reply({
-							content: 'There was an error while running this command.',
-							ephemeral: true
-						});
-				} catch (e) {
-					logger.error(e);
-				}
-				logger.error(e);
-			}
-		} else if (interaction.isButton()) {
-			try {
+			} else if (interaction.isButton()) {
 				await InteractionHandlers.Button(interaction);
-			} catch (e) {
-				try {
-					await interaction.reply({
-						content: 'There was an error while running this command.',
-						ephemeral: true
-					});
-				} catch {
-					await interaction.editReply(
-						'There was an error while running this command.'
-					);
-					logger.error(e);
-				}
 			}
-		} else if (interaction.isUserContextMenuCommand()) {
-			try {
-				await InteractionHandlers.ContextMenu.User(interaction);
-			} catch {
-				try {
-					await interaction.reply({
-						content: 'There was an error while running this command.',
-						ephemeral: true
-					});
-				} catch (e) {
-					logger.error(e);
-				}
-			}
-		} else if (interaction.isMessageContextMenuCommand()) {
-			try {
-				await InteractionHandlers.ContextMenu.Message(interaction);
-			} catch {
-				try {
-					await interaction.reply({
-						content: 'There was an error while running this command.',
-						ephemeral: true
-					});
-				} catch (e) {
-					logger.error(e);
-				}
-			}
-		} else if (interaction.isStringSelectMenu()) {
-			try {
-				await InteractionHandlers.StringSelectMenu(interaction);
-			} catch {
-				try {
-					await interaction.reply({
-						content: 'There was an error while running this command.',
-						ephemeral: true
-					});
-				} catch (e) {
-					logger.error(e);
-				}
-			}
+		} catch (e) {
+			await respondError(
+				interaction as
+					| ChatInputCommandInteraction
+					| ModalSubmitInteraction
+					| ButtonInteraction
+			);
+			logger.error(e);
 		}
 	})
 	.on(Events.Debug, m => logger.debug(m))
@@ -238,3 +167,21 @@ server.listen(process.env.PORT ?? PORT);
 logger.info(`Listening to HTTP server on port ${process.env.PORT ?? PORT}.`);
 
 logger.info('Process setup complete.');
+
+async function respondError(
+	interaction:
+		| ChatInputCommandInteraction
+		| ModalSubmitInteraction
+		| ButtonInteraction
+) {
+	if (interaction.replied || interaction.deferred) {
+		await interaction.editReply(
+			'There was an error while running this command.'
+		);
+	} else {
+		await interaction.reply({
+			content: 'There was an error while running this command.',
+			ephemeral: true
+		});
+	}
+}

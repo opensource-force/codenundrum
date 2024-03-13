@@ -1,8 +1,8 @@
 import {
 	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
 	ChatInputCommandInteraction,
-	Colors,
-	EmbedBuilder,
 	ModalBuilder,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
@@ -10,7 +10,6 @@ import {
 	TextInputStyle
 } from 'discord.js';
 import { CommandHelpEntry } from '../lib/CommandHelpEntry';
-import { ChallengeData } from '../../../shared/schemas';
 
 export const data = new SlashCommandBuilder()
 	.setName('challenge')
@@ -67,46 +66,17 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 					)
 				)
 		);
-	else if (subcommand === 'ls') {
-		// const db = await openKv(DENO_KV_URL);
-		// const cs = db!.list<ChallengeData>({
-		// 	prefix: [interaction.guildId!, 'challenge']
-		// });
-		// const challenges: ChallengeData[] = [];
-		// for await (const c of cs) {
-		// 	challenges.push(c.value);
-		// }
-		// const active = challenges.filter(c => c.isActive),
-		// 	inactive = challenges.filter(c => !c.isActive);
-		// await interaction.reply({
-		// 	embeds: [
-		// 		new EmbedBuilder()
-		// 			.setTitle('Active Challenges')
-		// 			.setColor(Colors.Green)
-		// 			.setDescription(
-		// 				active.length > 0
-		// 					? active
-		// 							.map(
-		// 								(v, i) =>
-		// 									`**${i + 1} - ${v.name}**\n${v.description.replaceAll(/\n\n+/g, '\n')}\n**${v.maxScore}** pts`
-		// 							)
-		// 							.join('\n')
-		// 					: 'No active challenges found.'
-		// 			),
-		// 		new EmbedBuilder()
-		// 			.setTitle('Inactive Challenges')
-		// 			.setColor(Colors.DarkNavy)
-		// 			.setDescription(
-		// 				inactive.length > 0
-		// 					? inactive
-		// 							.map(
-		// 								(v, i) =>
-		// 									`**${i + 1} - ${v.name}**\n${v.description.replaceAll(/\n\n+/g, '\n')}\n**${v.maxScore}** pts`
-		// 							)
-		// 							.join('\n')
-		// 					: 'No inactive challenges found.'
-		// 			)
-		// 	]
-		// });
-	}
+	else if (subcommand === 'ls')
+		await interaction.reply({
+			components: [
+				new ActionRowBuilder<ButtonBuilder>().setComponents(
+					new ButtonBuilder()
+						.setStyle(ButtonStyle.Link)
+						.setLabel('Open Dashboard')
+						.setURL('https://codenundrum.vercel.app/dashboard/')
+				)
+			],
+			content: 'Open the dashboard to view challenges!',
+			ephemeral: true
+		});
 }
