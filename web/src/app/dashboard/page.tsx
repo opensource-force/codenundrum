@@ -69,7 +69,7 @@ export default function Dashboard() {
 		setIsGuildLoaded(false);
 		getGuildScores(session.accessToken, session.tokenType, currentGuild).then(
 			scoresMap => {
-				setGuildScores(scoresMap ?? []);
+				setGuildScores(scoresMap instanceof Array ? scoresMap : []);
 				setIsGuildLoaded(true);
 			}
 		);
@@ -168,7 +168,7 @@ export default function Dashboard() {
 							<TableBody
 								emptyContent="No scores found."
 								items={guildScores
-									.toSorted(v => v[1])
+									.sort(v => v[1])
 									.toReversed()
 									.map((v, i) => {
 										return {
