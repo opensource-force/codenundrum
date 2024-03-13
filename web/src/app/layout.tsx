@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { Providers } from './providers';
 import { Inter } from '../fonts';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
 	title: {
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 		<html lang="en-US">
 			<body className={`dark ${Inter.className}`}>
 				<Providers>{children}</Providers>
+				<Analytics />
 			</body>
 		</html>
 	);
