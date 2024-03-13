@@ -1,13 +1,11 @@
-import { Snowflake } from 'discord.js';
-
 /**
  * @interface ChallengeData Represents a challenge
  */
 export interface ChallengeData {
 	/**
-	 * @prop {Snowflake} id The ID of the challenge
+	 * @prop {string} id The ID of the challenge
 	 */
-	id: Snowflake;
+	id: string;
 	/**
 	 * @prop {string} name The name of the challenge
 	 */
@@ -35,9 +33,9 @@ export interface ChallengeData {
  */
 export interface SubmissionData {
 	/**
-	 * @prop {Snowflake} userId The Discord ID of the user who submitted the challenge
+	 * @prop {string} userId The Discord UID of the user who submitted the challenge
 	 */
-	userId: Snowflake;
+	userId: string;
 	/**
 	 * @prop {string} link The link to the submission
 	 */
@@ -47,3 +45,22 @@ export interface SubmissionData {
 	 */
 	score: number | undefined;
 }
+
+/**
+ * @interface GuildEntry Represents the data entry for a guild
+ */
+export interface GuildEntry {
+	/**
+	 * @prop {ChallengeData[]} challenges The stored challenges for the guild
+	 */
+	challenges: ChallengeData[];
+	/**
+	 * @prop {[string, number][]} overallScores A map of Discord UIDs to their overall scores
+	 */
+	overallScores: OverallMemberScore[];
+}
+
+/**
+ * @typedef {[string, number]} OverallMemberScore A map of Discord UIDs to their overall scores
+ */
+export type OverallMemberScore = [string, number];

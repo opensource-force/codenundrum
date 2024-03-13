@@ -10,5 +10,8 @@
 	},
 	"scripts": {
 		"build": "turbo build"
+	},
+	"dependencies": {
+		"@vercel/kv": "^1.0.1"
 	}
 }

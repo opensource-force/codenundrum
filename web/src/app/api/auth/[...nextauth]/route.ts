@@ -1,8 +1,13 @@
-import NextAuth, { Session } from 'next-auth';
+import {
+	GetServerSidePropsContext,
+	NextApiRequest,
+	NextApiResponse
+} from 'next';
+import NextAuth, { AuthOptions, Session, getServerSession } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import Discord from 'next-auth/providers/discord';
 
-const handler = NextAuth({
+export const authOptions: AuthOptions = {
 	providers: [
 		Discord({
 			clientId: process.env.DISCORD_ID as string,
@@ -42,7 +47,9 @@ const handler = NextAuth({
 			return session as ExtdSession;
 		}
 	}
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export interface ExtdJWT extends JWT {
 	accessToken?: string;

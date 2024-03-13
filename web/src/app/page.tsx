@@ -22,7 +22,7 @@ export default function Page() {
 							sequence={[
 								'programming',
 								1000,
-								'challenge',
+								'problem-solving',
 								1000,
 								'competition',
 								1000,
@@ -30,7 +30,9 @@ export default function Page() {
 								1000,
 								'innovation',
 								1000,
-								'fun'
+								'personal growth',
+								1000,
+								'fun.'
 							]}
 							cursor={true}
 							className="text-2xl inline-block pl-1 after:text-blurple after:font-bold"

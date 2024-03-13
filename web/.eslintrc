@@ -1,7 +1,15 @@
 {
-	"extends": "next/core-web-vitals",
+	"extends": ["eslint:recommended", "next/babel", "next/core-web-vitals"],
 	"rules": {
-		"no-console": "error"
+		"no-console": "error",
+		"prefer-arrow-callback": "error",
+		"prefer-const": "error",
+		"prefer-destructuring": "error",
+		"prefer-numeric-literals": "error",
+		"prefer-rest-params": "error",
+		"prefer-spread": "error",
+		"prefer-template": "error",
+		"require-await": "error"
 	},
 	"ignorePatterns": [".next/**/*", "node_modules/**/*"]
 }
