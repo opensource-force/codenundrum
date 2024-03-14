@@ -1,14 +1,37 @@
 {
-	"extends": ["eslint:recommended", "next/core-web-vitals"],
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"plugins": ["@typescript-eslint"],
+	"root": true,
 	"rules": {
+		"@typescript-eslint/no-unused-vars": "error",
 		"no-console": "error",
+		"no-const-assign": "error",
+		"no-duplicate-imports": "error",
+		"no-eval": "error",
+		"no-fallthrough": "error",
+		"no-implied-eval": "error",
+		"no-invalid-regexp": "error",
+		"no-invalid-this": "error",
+		"no-irregular-whitespace": "error",
+		"no-redeclare": "off",
+		"no-self-assign": "error",
+		"no-self-compare": "error",
+		"no-unneeded-ternary": "error",
+		"no-unreachable": "error",
+		"no-unused-expressions": "error",
+		"no-unused-vars": "off",
+		"no-var": "error",
+		"no-with": "error",
 		"prefer-arrow-callback": "error",
 		"prefer-const": "error",
-		"prefer-destructuring": "error",
-		"prefer-numeric-literals": "error",
-		"prefer-rest-params": "error",
-		"prefer-spread": "error",
-		"prefer-template": "error"
-	},
-	"ignorePatterns": [".next/**/*", "node_modules/**/*"]
+		"prefer-promise-reject-errors": "error",
+		"prefer-template": "error",
+		"strict": "error",
+		"use-isnan": "error"
+	}
 }

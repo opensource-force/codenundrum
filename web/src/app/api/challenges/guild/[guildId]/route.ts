@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth/next';
-import { getGuildScores } from '../../../../../../../shared/functions';
+import { getGuildChallenges } from '../../../../../../../shared/functions';
 import { authOptions } from '../../../../../auth';
 
 export async function GET(
@@ -14,7 +14,7 @@ export async function GET(
 			},
 			{ status: 401 }
 		);
-	const data = await getGuildScores(
+	const data = await getGuildChallenges(
 		{
 			KV_TOKEN: process.env.KV_REST_API_TOKEN!,
 			KV_URL: process.env.KV_REST_API_URL!

@@ -18,7 +18,7 @@
 		"no-invalid-regexp": "error",
 		"no-invalid-this": "error",
 		"no-irregular-whitespace": "error",
-		"no-redeclare": "error",
+		"no-redeclare": "off",
 		"no-self-assign": "error",
 		"no-self-compare": "error",
 		"no-unneeded-ternary": "error",

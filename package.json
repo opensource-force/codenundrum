@@ -5,10 +5,10 @@
 		"bot/*",
 		"web/*"
 	],
-	"scripts": {
-		"build": "turbo build"
-	},
 	"dependencies": {
 		"@vercel/kv": "^1.0.1"
+	},
+	"devDependencies": {
+		"discord-api-types": "^0.37.73"
 	}
 }

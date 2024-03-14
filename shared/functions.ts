@@ -1,19 +1,37 @@
-import { kv } from '@vercel/kv';
+import { createClient } from '@vercel/kv';
 import { ChallengeData, GuildEntry } from './schemas';
 
-export async function getGuildData(guildId: string) {
+export async function getGuildData(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
+	guildId: string
+) {
+	const kv = createClient({
+		token: KV_TOKEN,
+		url: KV_URL
+	});
 	return kv.get<GuildEntry>(guildId);
 }
 
 export async function getGuildChallenges(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
 	guildId: string
 ): Promise<ChallengeData[]>;
 export async function getGuildChallenges(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
 	guildId: string,
 	sort: true
 ): Promise<{ active: ChallengeData[]; inactive: ChallengeData[] }>;
-export async function getGuildChallenges(guildId: string, sort?: true) {
-	const data = await getGuildData(guildId);
+export async function getGuildChallenges(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
+	guildId: string,
+	sort?: true
+) {
+	const kv = createClient({
+		token: KV_TOKEN,
+		url: KV_URL
+	});
+
+	const data = await getGuildData({ KV_TOKEN, KV_URL }, guildId);
 	if (!data) return null;
 	const { challenges } = data;
 	return challenges
@@ -26,12 +44,29 @@ export async function getGuildChallenges(guildId: string, sort?: true) {
 		: null;
 }
 
-export async function getGuildScores(guildId: string) {
-	return (await getGuildData(guildId))?.overallScores ?? null;
+export async function getGuildScores(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
+	guildId: string
+) {
+	const kv = createClient({
+		token: KV_TOKEN,
+		url: KV_URL
+	});
+	return (
+		(await getGuildData({ KV_TOKEN, KV_URL }, guildId))?.overallScores ?? null
+	);
 }
 
-export async function disableChallenge(guildId: string, challengeId: string) {
-	const data = await getGuildData(guildId);
+export async function disableChallenge(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
+	guildId: string,
+	challengeId: string
+) {
+	const kv = createClient({
+		token: KV_TOKEN,
+		url: KV_URL
+	});
+	const data = await getGuildData({ KV_TOKEN, KV_URL }, guildId);
 	if (!data) return false;
 	const { challenges } = data;
 	if (challenges.length === 0) return false;
@@ -39,24 +74,37 @@ export async function disableChallenge(guildId: string, challengeId: string) {
 	if (!challenge) return false;
 	if (!challenge.isActive) return false;
 	challenge.isActive = false;
-	data.challenges[data.challenges.indexOf(challenge)] = {
+	challenges[data.challenges.indexOf(challenge)] = {
 		...challenge,
-		isActive: false
+		isActive: false,
+		timestamp: new Date().toISOString()
 	};
-	await kv.set(guildId, data);
+	await kv.set(guildId, {
+		...data,
+		challenges: data.challenges.sort(
+			(a, b) =>
+				new Date(b.timestamp).getMilliseconds() -
+				new Date(a.timestamp).getMilliseconds()
+		)
+	});
 	return true;
 }
 
 export async function createChallenge(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
 	guildId: string,
 	id: string,
 	name: string,
 	description: string,
 	maxScore: number
 ) {
-	let data = await getGuildData(guildId);
+	const kv = createClient({
+		token: KV_TOKEN,
+		url: KV_URL
+	});
+	let data = await getGuildData({ KV_TOKEN, KV_URL }, guildId);
 	if (!data) {
-		await initializeGuild(guildId);
+		await initializeGuild({ KV_TOKEN, KV_URL }, guildId);
 		data = {
 			challenges: [],
 			overallScores: []
@@ -70,24 +118,34 @@ export async function createChallenge(
 		description,
 		maxScore,
 		isActive: true,
-		submissions: []
+		submissions: [],
+		timestamp: new Date().toISOString()
 	});
 	await kv.set(guildId, {
 		...data,
-		challenges
+		challenges: challenges.sort(
+			(a, b) =>
+				new Date(b.timestamp).getMilliseconds() -
+				new Date(a.timestamp).getMilliseconds()
+		)
 	});
 	return true;
 }
 
 export async function addSubmission(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
 	guildId: string,
 	challengeId: string,
 	link: string,
 	userId: string
 ) {
-	let data = await getGuildData(guildId);
+	const kv = createClient({
+		token: KV_TOKEN,
+		url: KV_URL
+	});
+	let data = await getGuildData({ KV_TOKEN, KV_URL }, guildId);
 	if (!data) {
-		await initializeGuild(guildId);
+		await initializeGuild({ KV_TOKEN, KV_URL }, guildId);
 		data = {
 			challenges: [],
 			overallScores: []
@@ -104,13 +162,15 @@ export async function addSubmission(
 		challenges[challengeIndex].submissions.push({
 			userId,
 			link,
-			score: undefined
+			score: undefined,
+			timestamp: new Date().toISOString()
 		});
 	else
 		challenges[challengeIndex].submissions[currentIndex] = {
 			userId,
 			link,
-			score: undefined
+			score: undefined,
+			timestamp: new Date().toISOString()
 		};
 	await kv.set(guildId, {
 		...data,
@@ -119,8 +179,15 @@ export async function addSubmission(
 	return true;
 }
 
-export async function initializeGuild(guildId: string) {
-	if (await getGuildData(guildId)) return false;
+export async function initializeGuild(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
+	guildId: string
+) {
+	const kv = createClient({
+		token: KV_TOKEN,
+		url: KV_URL
+	});
+	if (await getGuildData({ KV_TOKEN, KV_URL }, guildId)) return false;
 	await kv.set<GuildEntry>(guildId, {
 		challenges: [],
 		overallScores: []

@@ -38,6 +38,9 @@ export default function Nav() {
 						size="sm"
 						variant="shadow"
 						onPress={() => window.location.assign('/dashboard/')}
+						className={
+							window?.location?.pathname === '/dashboard/' ? 'hidden' : ''
+						}
 					>
 						{session ? 'Continue to Dashboard' : 'Login to Dashboard'}
 					</Button>
