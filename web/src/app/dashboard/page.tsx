@@ -45,7 +45,8 @@ import {
 	getGuildChallenges,
 	getGuildScores,
 	getGuilds,
-	getUserData
+	getUserData,
+	scoreChallenge
 } from './functions';
 import Footer from '../../_components/Footer';
 import { ChallengeData, SubmissionWithUser } from '../../../../shared/schemas';
@@ -420,7 +421,7 @@ export default function Dashboard() {
 																		</Button>
 																	</DropdownTrigger>
 																	<DropdownMenu
-																		onAction={key => {
+																		onAction={async key => {
 																			switch (key.toString()) {
 																				case 'grade': {
 																					const newScore = parseInt(
@@ -438,6 +439,12 @@ export default function Dashboard() {
 																							);
 																							break;
 																						}
+																						await scoreChallenge(
+																							currentGuild!,
+																							selectedChallenge!.id,
+																							userId,
+																							newScore
+																						);
 																						const newSubmissions =
 																							selectedChallenge!.submissions;
 																						newSubmissions[

@@ -137,7 +137,8 @@ export async function addSubmission(
 	guildId: string,
 	challengeId: string,
 	link: string,
-	userId: string
+	userId: string,
+	username: string
 ) {
 	const kv = createClient({
 		token: KV_TOKEN,
@@ -161,6 +162,7 @@ export async function addSubmission(
 	if (currentIndex === -1)
 		challenges[challengeIndex].submissions.push({
 			userId,
+			username,
 			link,
 			score: undefined,
 			timestamp: new Date().toISOString()
@@ -168,6 +170,7 @@ export async function addSubmission(
 	else
 		challenges[challengeIndex].submissions[currentIndex] = {
 			userId,
+			username,
 			link,
 			score: undefined,
 			timestamp: new Date().toISOString()
@@ -191,6 +194,44 @@ export async function initializeGuild(
 	await kv.set<GuildEntry>(guildId, {
 		challenges: [],
 		overallScores: []
+	});
+	return true;
+}
+
+export async function scoreChallenge(
+	{ KV_TOKEN, KV_URL }: { KV_TOKEN: string; KV_URL: string },
+	guildId: string,
+	challengeId: string,
+	userId: string,
+	score: number
+) {
+	const kv = createClient({
+		token: KV_TOKEN,
+		url: KV_URL
+	});
+	let data = await getGuildData({ KV_TOKEN, KV_URL }, guildId);
+	if (!data) {
+		await initializeGuild({ KV_TOKEN, KV_URL }, guildId);
+		data = {
+			challenges: [],
+			overallScores: []
+		};
+	}
+	const { challenges } = data;
+	const challengeIndex = challenges.findIndex(c => c.id === challengeId);
+	if (challengeIndex === -1) return false;
+	const submissionIndex = challenges[challengeIndex].submissions.findIndex(
+		v => v.userId === userId
+	);
+	if (submissionIndex === -1) return false;
+	challenges[challengeIndex].submissions[submissionIndex] = {
+		...challenges[challengeIndex].submissions[submissionIndex],
+		score,
+		timestamp: new Date().toISOString()
+	};
+	await kv.set(guildId, {
+		...data,
+		challenges
 	});
 	return true;
 }

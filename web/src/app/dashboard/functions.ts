@@ -89,3 +89,18 @@ export async function endChallenge(guildId: string, challengeId: string) {
 		}
 	).then(res => (res.ok ? res.json() : null)) as Promise<boolean | null>;
 }
+
+export async function scoreChallenge(
+	guildId: string,
+	challengeId: string,
+	userId: string,
+	score: number
+) {
+	return fetch(
+		`/api/challenges/score/${encodeURIComponent(guildId)}/${encodeURIComponent(challengeId)}/${encodeURIComponent(userId)}`,
+		{
+			method: 'PUT',
+			body: JSON.stringify(score)
+		}
+	).then(res => (res.ok ? res.json() : null)) as Promise<boolean | null>;
+}
